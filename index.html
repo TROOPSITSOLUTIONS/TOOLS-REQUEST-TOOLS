@@ -1,0 +1,394 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TEAM BCT | TOOLS REQUEST PORTAL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #050505;
+            --card-bg: #0f0f0f;
+            --primary-red: #ff0000;
+            --glow-red: rgba(255, 0, 0, 0.3);
+            --text-white: #ffffff;
+            --text-gray: #b0b0b0;
+            --border-color: #222;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-white);
+            line-height: 1.6;
+            display: block; /* মোবাইলে স্ক্রলিং সহজ করার জন্য */
+            padding: 15px;
+        }
+
+        /* Responsive Wrapper */
+        .wrapper {
+            width: 100%;
+            max-width: 650px;
+            margin: 20px auto;
+        }
+
+        .container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-top: 4px solid var(--primary-red);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 1.6rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary-red);
+            text-shadow: 0 0 10px var(--glow-red);
+        }
+
+        header p {
+            color: var(--text-gray);
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 25px 0 15px 0;
+            display: flex;
+            align-items: center;
+            border-left: 3px solid var(--primary-red);
+            padding-left: 10px;
+            background: linear-gradient(90deg, #1a0000, transparent);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            text-transform: uppercase;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            background: #151515;
+            border: 1px solid #333;
+            padding: 12px;
+            color: white;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            -webkit-appearance: none; /* iOS স্টাইল ফিক্স */
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            box-shadow: 0 0 8px var(--glow-red);
+        }
+
+        /* Radio Buttons */
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            background: #151515;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #333;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .radio-option input {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+            accent-color: var(--primary-red);
+        }
+
+        /* Identity Box */
+        .identity-box {
+            border: 1px solid #2a0000;
+            padding: 15px;
+            border-radius: 8px;
+            background: #0a0000;
+            margin-top: 10px;
+        }
+
+        /* Conditional Animation */
+        #conditional-fields {
+            display: none;
+            padding-top: 15px;
+            animation: slideDown 0.4s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            background: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 16px;
+            font-size: 1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 6px;
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.2);
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        /* Status Modal (Mobile Friendly) */
+        #status-modal {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            z-index: 9999;
+            display: none;
+            font-weight: bold;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .success { background: #00c851; color: white; }
+        .error { background: #ff4444; color: white; }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Mobile Specific Adjustments */
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            .container { padding: 18px; }
+            header h1 { font-size: 1.3rem; }
+            .radio-group { flex-direction: row; }
+            input, select, textarea { font-size: 16px; } /* ইনপুটে জুম হওয়া ঠেকাবে */
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-shield-alt"></i> Tool Request</h1>
+            <p>আপনার রিকোয়েস্ট সরাসরি অ্যাডমিনের কাছে পৌঁছাবে</p>
+        </header>
+
+        <form id="requestForm">
+            <div class="section-title">টুল ইনফরমেশন</div>
+            
+            <div class="form-group">
+                <label>টুলের নাম</label>
+                <input type="text" id="toolName" placeholder="টুলের নাম লিখুন" required>
+            </div>
+
+            <div class="form-group">
+                <label>ক্যাটাগরি</label>
+                <select id="category" required>
+                    <option value="" disabled selected>নির্বাচন করুন</option>
+                    <option value="Social Media">Social Media</option>
+                    <option value="Cyber Security">Cyber Security</option>
+                    <option value="Developer Tool">Developer Tool</option>
+                    <option value="AI Tool">AI Tool</option>
+                    <option value="Utility">Utility</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>বিস্তারিত বর্ণনা</label>
+                <textarea id="description" rows="4" placeholder="টুলটি কী কাজ করবে?" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>আপনার কাছে কি টুলস এর ডেমো কোড বা লিংক আছে?</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="built" value="no" checked onclick="toggleFields(false)"> না
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="built" value="yes" onclick="toggleFields(true)"> হ্যাঁ
+                    </label>
+                </div>
+            </div>
+
+            <div id="conditional-fields">
+                <div class="form-group">
+                    <label>লাইভ লিংক (ঐচ্ছিক)</label>
+                    <input type="url" id="liveLink" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>সোর্স কোড (ঐচ্ছিক)</label>
+                    <input type="url" id="sourceCode" placeholder="GitHub Link">
+                </div>
+            </div>
+
+            <div class="section-title">আপনার তথ্য (বাধ্যতামূলক)</div>
+            <div class="identity-box">
+                <div class="form-group">
+                    <label>আপনার নাম</label>
+                    <input type="text" id="fullName" placeholder="নাম লিখুন" required>
+                </div>
+                <div class="form-group">
+                    <label>Facebook প্রোফাইল লিংক</label>
+                    <input type="url" id="fbLink" placeholder="facebook.com/username" required>
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                    <label>Telegram (ঐচ্ছিক)</label>
+                    <input type="text" id="tgUser" placeholder="@username">
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top:20px">
+                <label>প্রায়োরিটি</label>
+                <select id="priority">
+                    <option value="Normal">Normal</option>
+                    <option value="Urgent">Urgent 🔥</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <span id="btnText">সাবমিট রিকোয়েস্ট</span>
+                <div class="spinner" id="loader"></div>
+            </button>
+        </form>
+    </div>
+</div>
+
+<div id="status-modal"></div>
+
+<script>
+    // JSONBin credentials (আপনারটা বসান)
+    const BIN_ID = '696476b4ae596e708fd6109e';
+    const API_KEY = '$2a$10$W3F/lL9fpvVCbE36DDYofO7ag7DAYtj/6m8EYbQmal26SJndRQD8a';
+
+    function toggleFields(show) {
+        document.getElementById('conditional-fields').style.display = show ? 'block' : 'none';
+    }
+
+    function showStatus(msg, type) {
+        const modal = document.getElementById('status-modal');
+        modal.textContent = msg;
+        modal.className = type;
+        modal.style.display = 'block';
+        setTimeout(() => { modal.style.display = 'none'; }, 4000);
+    }
+
+    document.getElementById('requestForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const btn = document.getElementById('submitBtn');
+        const loader = document.getElementById('loader');
+        const btnText = document.getElementById('btnText');
+
+        // UI Loading State
+        btn.disabled = true;
+        loader.style.display = 'block';
+        btnText.style.display = 'none';
+
+        try {
+            // 1. Fetch Config
+            const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                headers: { 'X-Master-Key': API_KEY }
+            });
+            const config = await res.json();
+            const { token, chat_id } = config.record;
+
+            // 2. Data Prepare
+            const msg = `
+🚨 *New Tool Request*
+━━━━━━━━━━━━━━━━━━
+🛠 *Tool:* ${document.getElementById('toolName').value}
+📂 *Cat:* ${document.getElementById('category').value}
+📝 *Desc:* ${document.getElementById('description').value}
+👤 *User:* ${document.getElementById('fullName').value}
+🔗 *FB:* ${document.getElementById('fbLink').value}
+🚨 *Priority:* ${document.getElementById('priority').value}
+━━━━━━━━━━━━━━━━━━`;
+
+            // 3. Send to Telegram
+            const tgRes = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: chat_id,
+                    text: msg,
+                    parse_mode: 'Markdown'
+                })
+            });
+
+            if(tgRes.ok) {
+                showStatus('সফলভাবে পাঠানো হয়েছে!', 'success');
+                this.reset();
+                toggleFields(false);
+            } else {
+                throw new Error();
+            }
+
+        } catch (err) {
+            showStatus('ব্যর্থ হয়েছে! আবার চেষ্টা করুন।', 'error');
+        } finally {
+            btn.disabled = false;
+            loader.style.display = 'none';
+            btnText.style.display = 'block';
+        }
+    });
+</script>
+
+</body>
+</html>
