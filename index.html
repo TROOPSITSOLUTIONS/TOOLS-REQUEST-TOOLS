@@ -221,13 +221,20 @@
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes slideIn { from{opacity:0; transform:translateY(-10px)} to{opacity:1; transform:translateY(0)} }
         @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
-
-        /* FOOTER */
+/* FOOTER */
         footer {
-            margin-top: 50px; text-align: center; font-family: var(--font-code);
-            font-size: 10px; color: #444; border-top: 1px solid var(--border);
-            padding-top: 20px; width: 100%;
+            text-align: center;
+            padding: 30px 15px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 1.5px;
+            color: #555;
         }
+
+        footer strong {
+    color: var(--primary);
+    text-shadow: 0 0 10px var(--primary-glow);
+}
 
     </style>
 </head>
@@ -317,7 +324,7 @@
                 <label class="input-label">MISSION URGENCY</label>
                 <select id="priority" class="cyber-select">
                     <option value="Normal">STANDARD PRIORITY</option>
-                    <option value="Urgent">CRITICAL / URGENT 🔥</option>
+                    <option value="Urgent">CRITICAL / URGENT </option>
                 </select>
             </div>
 
@@ -329,8 +336,8 @@
         </form>
 
         <footer>
-            &copy; 2026 TEAM BCT | ENCRYPTED TRANSMISSION
-        </footer>
+        <p>© 2026 <strong>BANGLADESH CYBER TROOPS</strong> | DEVELOPED BY <strong>TROOPS IT SOLUTIONS</strong></p>
+    </footer>
 
     </div>
 
