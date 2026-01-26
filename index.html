@@ -1,394 +1,459 @@
-
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TEAM BCT | TOOLS REQUEST PORTAL</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>BCT | REQUEST PROTOCOL</title>
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
+        /* ==========================================================================
+           1. CORE SYSTEM VARIABLES (THEME CONFIGURATION)
+           ========================================================================== */
         :root {
-            --bg-color: #050505;
-            --card-bg: #0f0f0f;
-            --primary-red: #ff0000;
-            --glow-red: rgba(255, 0, 0, 0.3);
-            --text-white: #ffffff;
-            --text-gray: #b0b0b0;
-            --border-color: #222;
+            --primary: #ff0033;
+            --primary-dark: #b30024;
+            --primary-glow: rgba(255, 0, 51, 0.6);
+            --primary-dim: rgba(255, 0, 51, 0.1);
+            
+            --success: #00ffcc;
+            --success-glow: rgba(0, 255, 204, 0.4);
+            
+            --bg-void: #000000;
+            --bg-panel: #050505;
+            --bg-card: rgba(15, 15, 15, 0.85);
+            
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            
+            --border: rgba(255, 255, 255, 0.1);
+            --border-active: rgba(255, 0, 51, 0.5);
+            
+            --font-head: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+            
+            --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
+        /* RESET & BASE */
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+        
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg-void); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-white);
+            background-color: var(--bg-void);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            font-size: 16px;
             line-height: 1.6;
-            display: block; /* মোবাইলে স্ক্রলিং সহজ করার জন্য */
-            padding: 15px;
         }
 
-        /* Responsive Wrapper */
+        /* ==========================================================================
+           2. DYNAMIC BACKGROUND (PARTICLE SYSTEM)
+           ========================================================================== */
+        #canvas-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2; opacity: 0.4; pointer-events: none;
+        }
+        
+        .vignette {
+            position: fixed; inset: 0; z-index: -1; pointer-events: none;
+            background: radial-gradient(circle at center, transparent 0%, #000 120%);
+        }
+
+        .grid-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: 
+                linear-gradient(rgba(255, 0, 51, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 0, 51, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px; pointer-events: none;
+        }
+
+        /* ==========================================================================
+           3. LAYOUT CONTAINER (SLIM MOBILE STYLE)
+           ========================================================================== */
         .wrapper {
-            width: 100%;
-            max-width: 650px;
-            margin: 20px auto;
+            width: 100%; max-width: 500px; /* Slim Profile */
+            margin: 0 auto; padding: 30px 20px;
+            position: relative; z-index: 10;
         }
 
-        .container {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-top: 4px solid var(--primary-red);
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+        /* HEADER */
+        .header-unit {
+            text-align: center; margin-bottom: 40px; position: relative;
+            padding-bottom: 20px; border-bottom: 1px solid var(--border);
+        }
+        
+        .brand-badge {
+            display: inline-block; padding: 6px 16px; border: 1px solid var(--primary);
+            color: var(--primary); font-family: var(--font-code); font-size: 10px;
+            letter-spacing: 2px; margin-bottom: 15px; text-transform: uppercase;
+            background: rgba(255,0,51,0.05); box-shadow: 0 0 20px var(--primary-dim);
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 30px;
+        .main-title {
+            font-family: var(--font-head); font-weight: 900; 
+            font-size: 28px; line-height: 1.2; text-transform: uppercase; color: #fff;
+            margin-bottom: 10px; letter-spacing: 2px;
+            text-shadow: 0 0 30px rgba(255,0,51,0.2);
+        }
+        
+        .sub-text {
+            font-size: 13px; color: var(--text-muted); font-family: var(--font-code);
         }
 
-        header h1 {
-            font-size: 1.6rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--primary-red);
-            text-shadow: 0 0 10px var(--glow-red);
+        /* ==========================================================================
+           4. FORM UI COMPONENTS
+           ========================================================================== */
+        .form-container {
+            display: flex; flex-direction: column; gap: 25px;
         }
 
-        header p {
-            color: var(--text-gray);
-            font-size: 0.85rem;
-            margin-top: 5px;
+        .section-header {
+            font-family: var(--font-head); font-size: 14px; color: var(--primary);
+            text-transform: uppercase; letter-spacing: 1px; margin: 10px 0 5px 0;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .section-header::after {
+            content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--primary), transparent);
         }
 
-        .section-title {
-            font-size: 1rem;
-            font-weight: 600;
-            margin: 25px 0 15px 0;
-            display: flex;
-            align-items: center;
-            border-left: 3px solid var(--primary-red);
-            padding-left: 10px;
-            background: linear-gradient(90deg, #1a0000, transparent);
+        /* INPUT GROUPS */
+        .input-group { position: relative; }
+        
+        .input-label {
+            font-size: 11px; color: #888; font-family: var(--font-head);
+            font-weight: 700; margin-bottom: 8px; display: block; text-transform: uppercase;
         }
 
-        .form-group {
-            margin-bottom: 18px;
+        .cyber-input, .cyber-select, .cyber-textarea {
+            width: 100%; background: var(--bg-panel); border: 1px solid var(--border);
+            padding: 16px; color: #fff; font-size: 15px; font-family: var(--font-code);
+            border-radius: 6px; transition: 0.3s var(--ease-out);
+        }
+        
+        .cyber-input:focus, .cyber-select:focus, .cyber-textarea:focus {
+            border-color: var(--primary); box-shadow: 0 0 15px var(--primary-dim);
+            background: #080808; outline: none;
         }
 
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 0.8rem;
-            color: var(--text-gray);
-            text-transform: uppercase;
+        /* RADIO CARDS */
+        .radio-grid { display: flex; gap: 10px; }
+        
+        .radio-label {
+            flex: 1; cursor: pointer; position: relative;
+        }
+        
+        .radio-input { position: absolute; opacity: 0; cursor: pointer; }
+        
+        .radio-card {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            padding: 15px; border-radius: 6px; text-align: center; transition: 0.3s;
+            font-family: var(--font-head); font-size: 12px; color: #aaa;
+        }
+        
+        .radio-input:checked + .radio-card {
+            border-color: var(--primary); background: var(--primary-dim);
+            color: #fff; box-shadow: 0 0 10px var(--primary-dim);
         }
 
-        input, select, textarea {
-            width: 100%;
-            background: #151515;
-            border: 1px solid #333;
-            padding: 12px;
-            color: white;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            -webkit-appearance: none; /* iOS স্টাইল ফিক্স */
+        /* IDENTITY BOX */
+        .id-card-box {
+            background: linear-gradient(145deg, rgba(20,20,20,0.6), rgba(5,5,5,0.8));
+            border: 1px solid var(--border); border-left: 3px solid var(--primary);
+            padding: 20px; border-radius: 8px; margin-top: 10px;
         }
 
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--primary-red);
-            box-shadow: 0 0 8px var(--glow-red);
-        }
-
-        /* Radio Buttons */
-        .radio-group {
-            display: flex;
-            gap: 15px;
-            background: #151515;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #333;
-        }
-
-        .radio-option {
-            display: flex;
-            align-items: center;
-            font-size: 0.9rem;
-            cursor: pointer;
-        }
-
-        .radio-option input {
-            width: 18px;
-            height: 18px;
-            margin-right: 8px;
-            accent-color: var(--primary-red);
-        }
-
-        /* Identity Box */
-        .identity-box {
-            border: 1px solid #2a0000;
-            padding: 15px;
-            border-radius: 8px;
-            background: #0a0000;
-            margin-top: 10px;
-        }
-
-        /* Conditional Animation */
+        /* CONDITIONAL */
         #conditional-fields {
-            display: none;
-            padding-top: 15px;
-            animation: slideDown 0.4s ease;
+            display: none; padding: 15px; background: rgba(255,0,51,0.03);
+            border: 1px dashed var(--border); border-radius: 8px; margin-top: 10px;
+            animation: slideIn 0.3s ease-out;
         }
 
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* SUBMIT BUTTON */
+        .submit-btn {
+            width: 100%; padding: 18px; background: var(--primary);
+            color: #000; font-family: var(--font-head); font-weight: 900;
+            font-size: 16px; border: none; cursor: pointer; text-transform: uppercase;
+            letter-spacing: 2px; clip-path: polygon(5% 0, 100% 0, 100% 70%, 95% 100%, 0 100%, 0 30%);
+            transition: 0.3s; position: relative; overflow: hidden; margin-top: 20px;
+        }
+        .submit-btn:hover {
+            background: #fff; box-shadow: 0 0 30px var(--primary-glow);
+        }
+        .submit-btn:disabled {
+            background: #333; color: #666; cursor: not-allowed; box-shadow: none;
         }
 
-        /* Submit Button */
-        .btn-submit {
-            width: 100%;
-            background: var(--primary-red);
-            color: white;
-            border: none;
-            padding: 16px;
-            font-size: 1rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            cursor: pointer;
-            border-radius: 6px;
-            margin-top: 25px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.2);
+        /* LOADER SPINNER */
+        .loader {
+            display: none; width: 20px; height: 20px; border: 3px solid #000;
+            border-top-color: transparent; border-radius: 50%;
+            animation: spin 0.8s linear infinite; margin-left: 10px;
         }
 
-        .btn-submit:active {
-            transform: scale(0.98);
-        }
-
-        /* Status Modal (Mobile Friendly) */
+        /* STATUS MODAL */
         #status-modal {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 400px;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            z-index: 9999;
-            display: none;
-            font-weight: bold;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: #111; padding: 15px 25px; border-radius: 8px;
+            border: 1px solid #333; box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            font-family: var(--font-code); font-size: 12px; color: #fff;
+            display: none; z-index: 999; text-align: center;
+            min-width: 300px;
+        }
+        #status-modal.success { border-color: var(--success); color: var(--success); }
+        #status-modal.error { border-color: var(--primary); color: var(--primary); }
+
+        /* ANIMATIONS */
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes slideIn { from{opacity:0; transform:translateY(-10px)} to{opacity:1; transform:translateY(0)} }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+
+        /* FOOTER */
+        footer {
+            margin-top: 50px; text-align: center; font-family: var(--font-code);
+            font-size: 10px; color: #444; border-top: 1px solid var(--border);
+            padding-top: 20px; width: 100%;
         }
 
-        .success { background: #00c851; color: white; }
-        .error { background: #ff4444; color: white; }
-
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            display: none;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Mobile Specific Adjustments */
-        @media (max-width: 480px) {
-            body { padding: 10px; }
-            .container { padding: 18px; }
-            header h1 { font-size: 1.3rem; }
-            .radio-group { flex-direction: row; }
-            input, select, textarea { font-size: 16px; } /* ইনপুটে জুম হওয়া ঠেকাবে */
-        }
     </style>
 </head>
 <body>
 
-<div class="wrapper">
-    <div class="container">
-        <header>
-            <h1><i class="fas fa-shield-alt"></i> Tool Request</h1>
-            <p>আপনার রিকোয়েস্ট সরাসরি অ্যাডমিনের কাছে পৌঁছাবে</p>
-        </header>
+    <canvas id="canvas-bg"></canvas>
+    <div class="grid-overlay"></div>
+    <div class="vignette"></div>
 
-        <form id="requestForm">
-            <div class="section-title">টুল ইনফরমেশন</div>
+    <div class="wrapper">
+        
+        <div class="header-unit">
+            <span class="brand-badge">PROTOCOL REQUEST</span>
+            <h1 class="main-title">TOOL REQUEST <br><span style="color:var(--primary)">PORTAL</span></h1>
+            <p class="sub-text">// SUBMIT YOUR TOOL SPECIFICATIONS FOR DEVELOPMENT</p>
+        </div>
+
+        <form id="requestForm" class="form-container">
             
-            <div class="form-group">
-                <label>টুলের নাম</label>
-                <input type="text" id="toolName" placeholder="টুলের নাম লিখুন" required>
+            <div class="section-header"><i class="fas fa-microchip"></i> TOOL DIAGNOSTICS</div>
+            
+            <div class="input-group">
+                <label class="input-label">TOOL DESIGNATION</label>
+                <input type="text" id="toolName" class="cyber-input" placeholder="Enter Tool Name..." required>
             </div>
 
-            <div class="form-group">
-                <label>ক্যাটাগরি</label>
-                <select id="category" required>
-                    <option value="" disabled selected>নির্বাচন করুন</option>
-                    <option value="Social Media">Social Media</option>
-                    <option value="Cyber Security">Cyber Security</option>
-                    <option value="Developer Tool">Developer Tool</option>
-                    <option value="AI Tool">AI Tool</option>
-                    <option value="Utility">Utility</option>
+            <div class="input-group">
+                <label class="input-label">CATEGORY CLASSIFICATION</label>
+                <select id="category" class="cyber-select" required>
+                    <option value="" disabled selected>SELECT CATEGORY</option>
+                    <option value="Social Media">SOCIAL MEDIA INTEL</option>
+                    <option value="Cyber Security">CYBER SECURITY OPS</option>
+                    <option value="Developer Tool">DEV UTILITIES</option>
+                    <option value="AI Tool">ARTIFICIAL INTELLIGENCE</option>
+                    <option value="Utility">SYSTEM UTILITY</option>
                 </select>
             </div>
 
-            <div class="form-group">
-                <label>বিস্তারিত বর্ণনা</label>
-                <textarea id="description" rows="4" placeholder="টুলটি কী কাজ করবে?" required></textarea>
+            <div class="input-group">
+                <label class="input-label">OPERATIONAL DESCRIPTION</label>
+                <textarea id="description" rows="4" class="cyber-textarea" placeholder="Describe the tool functionality in detail..." required></textarea>
             </div>
 
-            <div class="form-group">
-                <label>আপনার কাছে কি টুলস এর ডেমো কোড বা লিংক আছে?</label>
-                <div class="radio-group">
-                    <label class="radio-option">
-                        <input type="radio" name="built" value="no" checked onclick="toggleFields(false)"> না
+            <div class="input-group">
+                <label class="input-label">SOURCE CODE AVAILABILITY</label>
+                <div class="radio-grid">
+                    <label class="radio-label">
+                        <input type="radio" name="built" value="no" class="radio-input" checked onclick="toggleFields(false)">
+                        <div class="radio-card">NO</div>
                     </label>
-                    <label class="radio-option">
-                        <input type="radio" name="built" value="yes" onclick="toggleFields(true)"> হ্যাঁ
+                    <label class="radio-label">
+                        <input type="radio" name="built" value="yes" class="radio-input" onclick="toggleFields(true)">
+                        <div class="radio-card">YES</div>
                     </label>
                 </div>
             </div>
 
             <div id="conditional-fields">
-                <div class="form-group">
-                    <label>লাইভ লিংক (ঐচ্ছিক)</label>
-                    <input type="url" id="liveLink" placeholder="https://...">
+                <div class="input-group">
+                    <label class="input-label">LIVE PREVIEW URL</label>
+                    <input type="url" id="liveLink" class="cyber-input" placeholder="https://example.com">
                 </div>
-                <div class="form-group">
-                    <label>সোর্স কোড (ঐচ্ছিক)</label>
-                    <input type="url" id="sourceCode" placeholder="GitHub Link">
-                </div>
-            </div>
-
-            <div class="section-title">আপনার তথ্য (বাধ্যতামূলক)</div>
-            <div class="identity-box">
-                <div class="form-group">
-                    <label>আপনার নাম</label>
-                    <input type="text" id="fullName" placeholder="নাম লিখুন" required>
-                </div>
-                <div class="form-group">
-                    <label>Facebook প্রোফাইল লিংক</label>
-                    <input type="url" id="fbLink" placeholder="facebook.com/username" required>
-                </div>
-                <div class="form-group" style="margin-bottom:0">
-                    <label>Telegram (ঐচ্ছিক)</label>
-                    <input type="text" id="tgUser" placeholder="@username">
+                <div class="input-group">
+                    <label class="input-label">REPOSITORY LINK</label>
+                    <input type="url" id="sourceCode" class="cyber-input" placeholder="GitHub / GitLab URL">
                 </div>
             </div>
 
-            <div class="form-group" style="margin-top:20px">
-                <label>প্রায়োরিটি</label>
-                <select id="priority">
-                    <option value="Normal">Normal</option>
-                    <option value="Urgent">Urgent 🔥</option>
+            <div class="section-header"><i class="fas fa-user-secret"></i> OPERATOR IDENTITY</div>
+            
+            <div class="id-card-box">
+                <div class="input-group">
+                    <label class="input-label">CODENAME / REAL NAME</label>
+                    <input type="text" id="fullName" class="cyber-input" placeholder="Identify Yourself" required>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">FACEBOOK UPLINK</label>
+                    <input type="url" id="fbLink" class="cyber-input" placeholder="facebook.com/username" required>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">TELEGRAM HANDLE (OPTIONAL)</label>
+                    <input type="text" id="tgUser" class="cyber-input" placeholder="@username">
+                </div>
+            </div>
+
+            <div class="input-group" style="margin-top:20px;">
+                <label class="input-label">MISSION URGENCY</label>
+                <select id="priority" class="cyber-select">
+                    <option value="Normal">STANDARD PRIORITY</option>
+                    <option value="Urgent">CRITICAL / URGENT 🔥</option>
                 </select>
             </div>
 
-            <button type="submit" class="btn-submit" id="submitBtn">
-                <span id="btnText">সাবমিট রিকোয়েস্ট</span>
-                <div class="spinner" id="loader"></div>
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <span id="btnText"><i class="fas fa-paper-plane"></i> TRANSMIT REQUEST</span>
+                <div class="loader" id="loader"></div>
             </button>
+
         </form>
+
+        <footer>
+            &copy; 2026 TEAM BCT | ENCRYPTED TRANSMISSION
+        </footer>
+
     </div>
-</div>
 
-<div id="status-modal"></div>
+    <div id="status-modal">REQUEST SENT SUCCESSFULLY</div>
 
-<script>
-    // JSONBin credentials (আপনারটা বসান)
-    const BIN_ID = '696476b4ae596e708fd6109e';
-    const API_KEY = '$2a$10$W3F/lL9fpvVCbE36DDYofO7ag7DAYtj/6m8EYbQmal26SJndRQD8a';
+    <script>
+        // 1. PARTICLES BACKGROUND
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        let w, h, particles = [];
 
-    function toggleFields(show) {
-        document.getElementById('conditional-fields').style.display = show ? 'block' : 'none';
-    }
+        const resize = () => { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize);
+        resize();
 
-    function showStatus(msg, type) {
-        const modal = document.getElementById('status-modal');
-        modal.textContent = msg;
-        modal.className = type;
-        modal.style.display = 'block';
-        setTimeout(() => { modal.style.display = 'none'; }, 4000);
-    }
-
-    document.getElementById('requestForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const btn = document.getElementById('submitBtn');
-        const loader = document.getElementById('loader');
-        const btnText = document.getElementById('btnText');
-
-        // UI Loading State
-        btn.disabled = true;
-        loader.style.display = 'block';
-        btnText.style.display = 'none';
-
-        try {
-            // 1. Fetch Config
-            const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-                headers: { 'X-Master-Key': API_KEY }
-            });
-            const config = await res.json();
-            const { token, chat_id } = config.record;
-
-            // 2. Data Prepare
-            const msg = `
-🚨 *New Tool Request*
-━━━━━━━━━━━━━━━━━━
-🛠 *Tool:* ${document.getElementById('toolName').value}
-📂 *Cat:* ${document.getElementById('category').value}
-📝 *Desc:* ${document.getElementById('description').value}
-👤 *User:* ${document.getElementById('fullName').value}
-🔗 *FB:* ${document.getElementById('fbLink').value}
-🚨 *Priority:* ${document.getElementById('priority').value}
-━━━━━━━━━━━━━━━━━━`;
-
-            // 3. Send to Telegram
-            const tgRes = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: chat_id,
-                    text: msg,
-                    parse_mode: 'Markdown'
-                })
-            });
-
-            if(tgRes.ok) {
-                showStatus('সফলভাবে পাঠানো হয়েছে!', 'success');
-                this.reset();
-                toggleFields(false);
-            } else {
-                throw new Error();
+        class Particle {
+            constructor() {
+                this.x = Math.random() * w;
+                this.y = Math.random() * h;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2;
             }
-
-        } catch (err) {
-            showStatus('ব্যর্থ হয়েছে! আবার চেষ্টা করুন।', 'error');
-        } finally {
-            btn.disabled = false;
-            loader.style.display = 'none';
-            btnText.style.display = 'block';
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                if(this.x < 0 || this.x > w) this.vx *= -1;
+                if(this.y < 0 || this.y > h) this.vy *= -1;
+            }
+            draw() {
+                ctx.fillStyle = '#ff0033';
+                ctx.globalAlpha = 0.3;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
         }
-    });
-</script>
+
+        for(let i=0; i<50; i++) particles.push(new Particle());
+
+        function animate() {
+            ctx.clearRect(0, 0, w, h);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // 2. FORM LOGIC (UNCHANGED CORE LOGIC)
+        const BIN_ID = '696476b4ae596e708fd6109e';
+        const API_KEY = '$2a$10$W3F/lL9fpvVCbE36DDYofO7ag7DAYtj/6m8EYbQmal26SJndRQD8a';
+
+        function toggleFields(show) {
+            document.getElementById('conditional-fields').style.display = show ? 'block' : 'none';
+        }
+
+        function showStatus(msg, type) {
+            const modal = document.getElementById('status-modal');
+            modal.innerHTML = type === 'success' ? `<i class="fas fa-check-circle"></i> ${msg}` : `<i class="fas fa-exclamation-triangle"></i> ${msg}`;
+            modal.className = type;
+            modal.style.display = 'block';
+            setTimeout(() => { modal.style.display = 'none'; }, 4000);
+        }
+
+        document.getElementById('requestForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            const loader = document.getElementById('loader');
+            const btnText = document.getElementById('btnText');
+
+            // UI Loading State
+            btn.disabled = true;
+            loader.style.display = 'inline-block';
+            btnText.style.display = 'none';
+
+            try {
+                // 1. Fetch Config
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                    headers: { 'X-Master-Key': API_KEY }
+                });
+                const config = await res.json();
+                const { token, chat_id } = config.record;
+
+                // 2. Data Prepare
+                const msg = `
+🚨 *INCOMING TOOL REQUEST*
+━━━━━━━━━━━━━━━━━━
+🛠 *DESIGNATION:* ${document.getElementById('toolName').value}
+📂 *CLASS:* ${document.getElementById('category').value}
+📝 *BRIEF:* ${document.getElementById('description').value}
+👤 *OPERATOR:* ${document.getElementById('fullName').value}
+🔗 *UPLINK:* ${document.getElementById('fbLink').value}
+⚡ *URGENCY:* ${document.getElementById('priority').value}
+━━━━━━━━━━━━━━━━━━
+_Transmitted via BCT Portal_`;
+
+                // 3. Send to Telegram
+                const tgRes = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: chat_id,
+                        text: msg,
+                        parse_mode: 'Markdown'
+                    })
+                });
+
+                if(tgRes.ok) {
+                    showStatus('REQUEST TRANSMITTED SUCCESSFULLY', 'success');
+                    this.reset();
+                    toggleFields(false);
+                } else {
+                    throw new Error();
+                }
+
+            } catch (err) {
+                showStatus('TRANSMISSION FAILED. RETRY.', 'error');
+            } finally {
+                btn.disabled = false;
+                loader.style.display = 'none';
+                btnText.style.display = 'inline-block';
+            }
+        });
+    </script>
 
 </body>
 </html>
